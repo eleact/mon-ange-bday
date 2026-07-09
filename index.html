@@ -38,17 +38,37 @@ h1{
         transform .2s,
         background-color .2s;
 }
+
+#memoryPhoto{
+    position:absolute;
+    width:250px;
+    max-height:250px;
+    object-fit:cover;
+    border-radius:15px;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    display:none;
+    box-shadow:0 5px 20px rgba(0,0,0,0.2);
+}
 </style>
 </head>
 
 <body>
 
 <h1>🎁 Catch the Present!</h1>
-<div id="message">20 clicks to unlock your surprise!</div>
+
+<div id="message">
+20 clicks to unlock your surprise!
+</div>
+
+<img id="memoryPhoto">
 
 <button id="button">Catch me!</button>
 
+
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
 
 <script>
 
@@ -57,8 +77,38 @@ const requiredClicks = 22;
 // CHANGE THIS
 const secretLink = "https://YOUR-LINK-HERE.com";
 
+
+// PUT YOUR PHOTOS HERE
+const photos = [
+    "images/photo1.jpg",
+    "images/photo2.jpg",
+    "images/photo3.jpg",
+    "images/photo4.jpg",
+    "images/photo5.jpg",
+    "images/photo6.jpg",
+    "images/photo7.jpg",
+    "images/photo8.jpg",
+    "images/photo9.jpg",
+    "images/photo10.jpg"
+    "images/photo11.jpg",
+    "images/photo12.jpg",
+    "images/photo13.jpg",
+    "images/photo14.jpg",
+    "images/photo15.jpg",
+    "images/photo16.jpg",
+    "images/photo17.jpg",
+    "images/photo18.jpg",
+    "images/photo19.jpg",
+    "images/photo20.jpg",
+    "images/photo21.jpg",
+    "images/photo22.jpg"
+];
+
+
 const button = document.getElementById("button");
 const message = document.getElementById("message");
+const memoryPhoto = document.getElementById("memoryPhoto");
+
 
 const texts = [
 "Too slow 😜",
@@ -73,6 +123,7 @@ const texts = [
 "Catch me!"
 ];
 
+
 const colors = [
 "#e63946",
 "#4361ee",
@@ -85,108 +136,167 @@ const colors = [
 "#118ab2"
 ];
 
+
 let clicks = 0;
 let scale = 1;
 
+
 move();
+
 
 button.addEventListener("click", () => {
 
+
     clicks++;
+
+
+    // CHANGE PHOTO EVERY CLICK
+    const photoIndex = (clicks - 1) % photos.length;
+
+    memoryPhoto.src = photos[photoIndex];
+    memoryPhoto.style.display = "block";
+
+
+    // make photo move slightly every click
+    memoryPhoto.style.left = Math.random()*70+15+"%";
+    memoryPhoto.style.top = Math.random()*60+20+"%";
+
 
     if(clicks % 4 === 0 && scale > 0.55){
         scale -= 0.07;
         button.style.transform = `scale(${scale})`;
     }
 
+
     button.style.background =
         colors[Math.floor(Math.random()*colors.length)];
+
 
     button.textContent =
         texts[Math.floor(Math.random()*texts.length)];
 
+
     const remaining = requiredClicks-clicks;
+
 
     if(remaining<=0){
 
+
         message.innerHTML="🎉 YOU DID IT!";
+
 
         confetti({
             particleCount:250,
             spread:150
         });
 
+
         victorySound();
+
 
         setTimeout(()=>{
             window.location.href=secretLink;
         },1800);
 
+
         return;
     }
 
-    message.innerHTML=`${remaining} click${remaining==1?"":"s"} remaining`;
+
+    message.innerHTML=
+    `${remaining} click${remaining==1?"":"s"} remaining`;
+
 
     move();
+
 });
+
+
 
 function move(){
 
+
     let x,y;
 
-    // 25% chance of teleporting to opposite side
+
     if(Math.random()<0.25){
+
 
         const currentX=parseFloat(button.style.left)||0;
         const currentY=parseFloat(button.style.top)||0;
+
 
         x=currentX<window.innerWidth/2 ?
             window.innerWidth-button.offsetWidth-30 :
             30;
 
+
         y=currentY<window.innerHeight/2 ?
             window.innerHeight-button.offsetHeight-30 :
             100;
 
+
     }else{
 
+
         x=Math.random()*(window.innerWidth-button.offsetWidth);
-        y=80+Math.random()*(window.innerHeight-button.offsetHeight-100);
+
+        y=80+Math.random()*
+        (window.innerHeight-button.offsetHeight-100);
 
     }
 
+
     button.style.left=x+"px";
     button.style.top=y+"px";
+
 }
+
+
 
 function victorySound(){
 
-    const audio=new(window.AudioContext||window.webkitAudioContext)();
+
+    const audio=
+    new(window.AudioContext||window.webkitAudioContext)();
+
 
     const osc=audio.createOscillator();
     const gain=audio.createGain();
 
+
     osc.connect(gain);
     gain.connect(audio.destination);
+
 
     osc.type="triangle";
     osc.frequency.value=700;
 
-    gain.gain.setValueAtTime(0.2,audio.currentTime);
+
+    gain.gain.setValueAtTime(
+        0.2,
+        audio.currentTime
+    );
+
+
     gain.gain.exponentialRampToValueAtTime(
         0.0001,
         audio.currentTime+0.8
     );
+
 
     osc.start();
     osc.stop(audio.currentTime+0.8);
 
 }
 
+
+
 button.style.background=
 colors[Math.floor(Math.random()*colors.length)];
 
 </script>
+
 
 </body>
 </html>
