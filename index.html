@@ -16,12 +16,16 @@ body{
 h1{
     margin-top:40px;
     text-align:center;
+    position:relative;
+    z-index:3;
 }
 
 #message{
     text-align:center;
     font-size:22px;
     margin-top:20px;
+    position:relative;
+    z-index:3;
 }
 
 #button{
@@ -32,6 +36,7 @@ h1{
     font-size:22px;
     color:white;
     cursor:pointer;
+    z-index:2;
     transition:
         left .2s,
         top .2s,
@@ -40,26 +45,24 @@ h1{
 }
 
 #memoryPhoto{
-    position:absolute;
-    width:250px;
-    max-height:250px;
+    position:fixed;
+    width:100vw;
+    height:100vh;
     object-fit:cover;
-    border-radius:15px;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
+    left:0;
+    top:0;
     display:none;
-    box-shadow:0 5px 20px rgba(0,0,0,0.2);
+    z-index:1;
 }
 </style>
 </head>
+
 
 <body>
 
 <h1>🎁 Catch the Present!</h1>
 
-<div id="message">
-</div>
+<div id="message"></div>
 
 <img id="memoryPhoto">
 
@@ -73,11 +76,11 @@ h1{
 
 const requiredClicks = 22;
 
-// CHANGE THIS
+// CHANGE THIS TO YOUR FINAL LINK
 const secretLink = "https://YOUR-LINK-HERE.com";
 
 
-// PUT YOUR PHOTOS HERE
+// YOUR 22 PHOTOS
 const photos = [
     "images/photo1.jpeg",
     "images/photo2.jpeg",
@@ -149,36 +152,48 @@ button.addEventListener("click", () => {
     clicks++;
 
 
-    // CHANGE PHOTO EVERY CLICK
-    const photoIndex = (clicks - 1) % photos.length;
+ // SHOW NEXT PHOTO WITH FADE EFFECT
+const photoIndex = clicks - 1;
+
+// fade out current photo
+memoryPhoto.style.opacity = 0;
+
+setTimeout(() => {
 
     memoryPhoto.src = photos[photoIndex];
-    memoryPhoto.style.display = "block";
+
+    memoryPhoto.onload = () => {
+        memoryPhoto.style.display = "block";
+
+        // fade in new photo
+        setTimeout(() => {
+            memoryPhoto.style.opacity = 1;
+        }, 50);
+    };
+
+}, 400);
 
 
-    // make photo move slightly every click
-    memoryPhoto.style.left = Math.random()*70+15+"%";
-    memoryPhoto.style.top = Math.random()*60+20+"%";
-
-
+    // MAKE BUTTON SMALLER
     if(clicks % 4 === 0 && scale > 0.55){
         scale -= 0.07;
         button.style.transform = `scale(${scale})`;
     }
 
 
+    // CHANGE BUTTON COLOR
     button.style.background =
         colors[Math.floor(Math.random()*colors.length)];
 
 
+    // CHANGE BUTTON TEXT
     button.textContent =
         texts[Math.floor(Math.random()*texts.length)];
 
 
-    const remaining = requiredClicks-clicks;
 
-
-    if(remaining<=0){
+    // LAST CLICK
+    if(clicks >= requiredClicks){
 
 
         message.innerHTML="🎉 YOU DID IT!";
@@ -202,8 +217,8 @@ button.addEventListener("click", () => {
     }
 
 
-    message.innerHTML=
-    `${remaining} click${remaining==1?"":"s"} remaining`;
+    // NO COUNTDOWN TEXT
+    message.innerHTML="";
 
 
     move();
@@ -213,7 +228,6 @@ button.addEventListener("click", () => {
 
 
 function move(){
-
 
     let x,y;
 
@@ -255,7 +269,6 @@ function move(){
 
 function victorySound(){
 
-
     const audio=
     new(window.AudioContext||window.webkitAudioContext)();
 
@@ -290,7 +303,8 @@ function victorySound(){
 }
 
 
-button.style.background=
+
+button.style.background =
 colors[Math.floor(Math.random()*colors.length)];
 
 </script>
