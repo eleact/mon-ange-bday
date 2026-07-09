@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Catch Me If You Can!</title>
+
+<style>
+body{
+    margin:0;
+    overflow:hidden;
+    background:#f5f5f5;
+    font-family:Arial,Helvetica,sans-serif;
+    user-select:none;
+}
+
+h1{
+    margin-top:40px;
+    text-align:center;
+}
+
+#message{
+    text-align:center;
+    font-size:22px;
+    margin-top:20px;
+}
+
+#button{
+    position:absolute;
+    padding:18px 35px;
+    border:none;
+    border-radius:12px;
+    font-size:22px;
+    color:white;
+    cursor:pointer;
+    transition:
+        left .2s,
+        top .2s,
+        transform .2s,
+        background-color .2s;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎁 Catch the Present!</h1>
+<div id="message">20 clicks to unlock your surprise!</div>
+
+<button id="button">Catch me!</button>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+<script>
+
+const requiredClicks = 20;
+
+// CHANGE THIS
+const secretLink = "https://YOUR-LINK-HERE.com";
+
+const button = document.getElementById("button");
+const message = document.getElementById("message");
+
+const texts = [
+"Too slow 😜",
+"Almost!",
+"Missed me!",
+"Keep going!",
+"You can do better!",
+"I'm over here!",
+"Not yet!",
+"So close!",
+"Again!",
+"Catch me!"
+];
+
+const colors = [
+"#e63946",
+"#4361ee",
+"#f72585",
+"#2a9d8f",
+"#ff9f1c",
+"#7209b7",
+"#06d6a0",
+"#ef476f",
+"#118ab2"
+];
+
+let clicks = 0;
+let scale = 1;
+
+move();
+
+button.addEventListener("click", () => {
+
+    clicks++;
+
+    if(clicks % 4 === 0 && scale > 0.55){
+        scale -= 0.07;
+        button.style.transform = `scale(${scale})`;
+    }
+
+    button.style.background =
+        colors[Math.floor(Math.random()*colors.length)];
+
+    button.textContent =
+        texts[Math.floor(Math.random()*texts.length)];
+
+    const remaining = requiredClicks-clicks;
+
+    if(remaining<=0){
+
+        message.innerHTML="🎉 YOU DID IT!";
+
+        confetti({
+            particleCount:250,
+            spread:150
+        });
+
+        victorySound();
+
+        setTimeout(()=>{
+            window.location.href=secretLink;
+        },1800);
+
+        return;
+    }
+
+    message.innerHTML=`${remaining} click${remaining==1?"":"s"} remaining`;
+
+    move();
+});
+
+function move(){
+
+    let x,y;
+
+    // 25% chance of teleporting to opposite side
+    if(Math.random()<0.25){
+
+        const currentX=parseFloat(button.style.left)||0;
+        const currentY=parseFloat(button.style.top)||0;
+
+        x=currentX<window.innerWidth/2 ?
+            window.innerWidth-button.offsetWidth-30 :
+            30;
+
+        y=currentY<window.innerHeight/2 ?
+            window.innerHeight-button.offsetHeight-30 :
+            100;
+
+    }else{
+
+        x=Math.random()*(window.innerWidth-button.offsetWidth);
+        y=80+Math.random()*(window.innerHeight-button.offsetHeight-100);
+
+    }
+
+    button.style.left=x+"px";
+    button.style.top=y+"px";
+}
+
+function victorySound(){
+
+    const audio=new(window.AudioContext||window.webkitAudioContext)();
+
+    const osc=audio.createOscillator();
+    const gain=audio.createGain();
+
+    osc.connect(gain);
+    gain.connect(audio.destination);
+
+    osc.type="triangle";
+    osc.frequency.value=700;
+
+    gain.gain.setValueAtTime(0.2,audio.currentTime);
+    gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        audio.currentTime+0.8
+    );
+
+    osc.start();
+    osc.stop(audio.currentTime+0.8);
+
+}
+
+button.style.background=
+colors[Math.floor(Math.random()*colors.length)];
+
+</script>
+
+</body>
+</html>
