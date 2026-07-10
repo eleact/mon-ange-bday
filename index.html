@@ -163,7 +163,7 @@ const texts=[
 "Touché",
 "Coulé",
 "Pas loin",
-"Bon anniv",
+"Bon anniv💚",
 "C'etait proche",
 "Oops",
 "Encore!",
@@ -172,7 +172,7 @@ const texts=[
 "Ou pas",
 "Une derniere pour la route?",
 "Je rigole",
-"Hihi je t'aime mon coeur",
+"Hihi 💚 je t'aime mon coeur💚💚💚💚",
 
 ];
 
@@ -263,8 +263,7 @@ colors[Math.floor(Math.random()*colors.length)];
 
 // change button text
 
-button.textContent=
-texts[Math.floor(Math.random()*texts.length)];
+button.textContent = texts[clicks - 1];
 
 
 
@@ -399,9 +398,9 @@ if (clicks >= requiredClicks) {
         <h2>Joyeux anniversaire ma chouquette à la pistache 💚</h2>
 
         <p>
-        Tu as 
+        Tu as enfin cliqué 22 fois, c'était long
         <br><br>
-        Mais ta surprise arrive maintenant
+        Mais ta surprise arrive maintenant !
         </p>
 
         <button id="gift">
