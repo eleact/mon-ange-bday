@@ -64,7 +64,8 @@ h1{
     left:0;
     top:0;
 
-    display:none;
+    display:block;
+opacity:1;
 
     z-index:1;
 
@@ -87,7 +88,7 @@ h1{
 <div id="message"></div>
 
 
-<img id="memoryPhoto">
+<img id="memoryPhoto" src="images/photo1.jpeg">
 
 
 <button id="button">
@@ -194,10 +195,10 @@ const colors=[
 
 
 let clicks=0;
-
 let scale=1;
 
-
+memoryPhoto.style.display="block";
+memoryPhoto.style.opacity=1;
 
 move();
 
